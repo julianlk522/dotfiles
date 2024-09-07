@@ -1,0 +1,13 @@
+*
+
+!.gitignore
+!qtile
+!qtile/*
+!picom
+!picom/*
+!nvim
+!nvim/*
+!nvim/**
+!wezterm
+!wezterm/*
+!.bashrc
