@@ -3,7 +3,6 @@ import subprocess
 from libqtile import bar, hook, layout, qtile, widget
 from libqtile.config import Click, Drag, Group, Key, Match, Screen
 from libqtile.lazy import lazy
-from libqtile.utils import guess_terminal
 from qtile_extras import widget
 from qtile_extras.widget.decorations import BorderDecoration
 
@@ -14,7 +13,7 @@ def startup_once():
     subprocess.run('~/.config/qtile/autostart_once.sh')
 
 mod = "mod4"
-terminal = guess_terminal()
+terminal = "wezterm"
 
 keys = [
 
