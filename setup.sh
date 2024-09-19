@@ -17,7 +17,7 @@ if [ ! -d ~/.local/bin/qtile ]; then
 fi
 
 # picom
-if [ ! -f /usr/local/bin/picom || ! -f /usr/bin/picom ]; then
+if [ ! -f /usr/local/bin/picom ] && [ ! -f /usr/bin/picom ]; then
     sudo apt install picom
 fi
 
@@ -29,7 +29,7 @@ if [ ! -f /usr/share/keyrings/wezterm-fury.gpg ]; then
 fi
 
 # nvim
-if [ ! -d /opt/nvim-linux64 || ! -d /opt/nvim ]; then
+if [ ! -d /opt/nvim-linux64 ] && [ ! -d /opt/nvim ]; then
     curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim-linux64.tar.gz
     sudo rm -rf /opt/nvim
     sudo tar -C /opt -xzf nvim-linux64.tar.gz
@@ -38,7 +38,7 @@ fi
 
 ## Move config files
 mkdir -p ~/.config
-cp -r wezterm ~/.config/wezterm 
 cp -r qtile ~/.config
-cp -r nvim ~/.config
 cp -r picom ~/.config
+cp -r wezterm ~/.config 
+cp -r nvim ~/.config

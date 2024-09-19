@@ -1,3 +1,2 @@
-#!/usr/bin/bash
-
+#!/bin/bash
 picom -b
