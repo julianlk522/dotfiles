@@ -1,6 +1,12 @@
 #!/bin/bash
 ## Note: this is configured for Debian based distributions. Other distros will need to use appropriate package managers, etc.
 
+## .bashrc
+cp .bashrc ~/.bashrc && source ~/.bashrc
+
+## Nerd font
+wget https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/MartianMono.zip && unzip MartianMono.zip -d ~/.local/share/fonts && fc-cache -fv
+
 ## Install packages
 # qtile
 sudo apt install xserver-xorg xinit libpangocairo-1.0-0 python3-pip python3-xcffib python3-cairocffi
