@@ -20,6 +20,9 @@ shopt -s checkwinsize
 # "**" matches all files and zero or more directories and subdirectories.
 shopt -s globstar
 
+# extend globbing
+shopt -s extglob
+
 # make less more friendly for non-text input files
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
 
