@@ -144,6 +144,7 @@ widget_defaults = dict(
 )
 extension_defaults = widget_defaults.copy()
 
+active_network_interface = subprocess.check_output("ip route show default").decode("utf-8").split("dev ")[1].split(" ")[0]
 screens = [
     Screen(
         top=bar.Bar(
@@ -196,33 +197,36 @@ screens = [
                     ],
                  ),
                 widget.Spacer(length = 8),
-                widget.Battery(
-                    battery = 'CMB0',
-                    foreground = colors[4],
-                    format = '🔋  Bat: {percent:2.0%}',
-                    decorations=[
-                        BorderDecoration(
-                            colour = colors[4],
-                            border_width = [0, 0, 2, 0],
-                        )
-                    ]
-                ),
-                widget.Spacer(),
-                widget.Backlight(
-                    backlight_name = 'intel_backlight',
-                    format = '🔆  Brightness: {percent:2.0%}',
-                    foreground = colors[3],
-                    decorations=[
-                        BorderDecoration(
-                            colour = colors[3],
-                            border_width = [0, 0, 2, 0],
-                        )
-                    ],
 
-                ),
-                widget.Spacer(length = 8),
+                # LAPTOP ONLY
+                # widget.Battery(
+                #     battery = 'CMB0',
+                #     foreground = colors[4],
+                #     format = '🔋  Bat: {percent:2.0%}',
+                #     decorations=[
+                #         BorderDecoration(
+                #             colour = colors[4],
+                #             border_width = [0, 0, 2, 0],
+                #         )
+                #     ]
+                # ),
+                # widget.Spacer(),
+                # widget.Backlight(
+                #     backlight_name = 'intel_backlight',
+                #     format = '🔆  Brightness: {percent:2.0%}',
+                #     foreground = colors[3],
+                #     decorations=[
+                #         BorderDecoration(
+                #             colour = colors[3],
+                #             border_width = [0, 0, 2, 0],
+                #         )
+                #     ],
+
+                # ),
+                # widget.Spacer(length = 8),
+
                 widget.Wlan(
-                    interface = 'wlp0s20f3',
+                    interface = active_network_interface,
                     foreground = colors[5],
                     format = '📶  {essid} {quality}/70',
                     decorations=[
@@ -270,7 +274,7 @@ screens = [
             ],
             24,
         ),
-        wallpaper="~/.config/qtile/wallpaper/guts.jpg",
+        wallpaper="~/.config/qtile/wallpaper/bg.jpg",
         wallpaper_mode='fill',
     ),
 ]
