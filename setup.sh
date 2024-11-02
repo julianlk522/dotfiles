@@ -38,9 +38,9 @@ if [ ! -d /opt/nvim-linux64 ] && [ ! -d /opt/nvim ]; then
     echo "export PATH=/opt/nvim/bin:$PATH" >> ~/.bashrc
 fi
 
+chmod +x qtile/autostart_once.sh
+
 ## Move config files
 mkdir -p ~/.config
-cp -r qtile ~/.config
-cp -r picom ~/.config
-cp -r wezterm ~/.config 
-cp -r nvim ~/.config
+chmod +x copy-config.sh
+./copy-config.sh
