@@ -12,9 +12,10 @@ fi
 ## Install packages
 # qtile
 if [ ! -d ~/.local/bin/qtile ]; then
-    sudo apt install xserver-xorg xinit libpangocairo-1.0-0 python3-pip python3-xcffib python3-cairocffi pipx
+    sudo apt install xserver-xorg xinit libpangocairo-1.0-0 python3-pip python3-xcffib python3-cairocffi pipx libiw-dev
     pipx install qtile
-    pipx inject qtile qtile-extras
+    pipx inject qtile qtile-extras psutil iwlib
+    cp qtile/qtile.desktop /usr/share/xsessions
 fi
 
 # picom
