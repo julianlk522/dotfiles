@@ -144,7 +144,7 @@ widget_defaults = dict(
 )
 extension_defaults = widget_defaults.copy()
 
-active_network_interface = subprocess.check_output("ip route show default").decode("utf-8").split("dev ")[1].split(" ")[0]
+active_network_interface = subprocess.check_output(["ip", "route", "show", "default"]).decode("utf-8").split("dev ")[1].split(" ")[0]
 screens = [
     Screen(
         top=bar.Bar(
