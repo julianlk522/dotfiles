@@ -5,10 +5,10 @@ return {
     config = function()
       local lint = require 'lint'
       lint.linters_by_ft = {
-        markdown = { 'markdownlint' },
-        dockerfile = { "hadolint" },
-        json = { "jsonlint" },
-        text = { "vale" }
+        -- markdown = { 'markdownlint' },
+        dockerfile = { 'hadolint' },
+        json = { 'jsonlint' },
+        text = { 'vale' },
       }
 
       -- Linting autocommand
@@ -16,7 +16,9 @@ return {
       vim.api.nvim_create_autocmd({ 'BufEnter', 'BufWritePost', 'InsertLeave' }, {
         group = lint_augroup,
         callback = function()
-          lint.try_lint()
+          if vim.opt_local.modifiable:get() then
+            lint.try_lint()
+          end
         end,
       })
     end,
