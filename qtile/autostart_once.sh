@@ -1,2 +1,2 @@
 #!/bin/bash
-picom -b
+picom -b --config ~/.config/picom/picom.conf
