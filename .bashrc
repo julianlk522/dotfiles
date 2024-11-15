@@ -93,6 +93,9 @@ if [ -f ~/.bash_aliases ]; then
     . ~/.bash_aliases
 fi
 
+alias suspend='systemctl suspend'
+alias nmrestart='sudo service NetworkManager restart'
+
 alias voff='amixer -D pulse set Master 0'
 alias vup='amixer -D pulse set Master 5%+'
 alias vdown='amixer -D pulse set Master 5%-'
