@@ -62,15 +62,12 @@ keys = [
     Key([mod], "Return", lazy.spawn(terminal), desc="Launch terminal"),
     Key([mod], "r", lazy.spawncmd(), desc="Spawn a command using a prompt widget"),
 
-    # Open terminal to code
-    Key([mod], "c", lazy.spawn(terminal + " --working-directory=/home/julian/Documents/Code"), desc="Open terminal to home/Documents/Code"),
-
     # Open web browser
     Key([mod], "b", lazy.spawn("firefox"), desc="Open web browser"),
 
-    # Increase / decrease brightness
-    Key([], "F3", lazy.spawn("brightnessctl s +5%"), desc="Increase display brightness"),
-    Key([], "F2", lazy.spawn("brightnessctl s 5%-"), desc="Decrease display brightness"),
+    # Increase / decrease brightness (LAPTOP ONLY)
+    # Key([], "F3", lazy.spawn("brightnessctl s +5%"), desc="Increase display brightness"),
+    # Key([], "F2", lazy.spawn("brightnessctl s 5%-"), desc="Decrease display brightness"),
 
     # Reset / shutdown qtile
     Key([mod, "control"], "r", lazy.reload_config(), desc="Reload the config"),
@@ -243,6 +240,19 @@ screens = [
                     decorations=[
                         BorderDecoration(
                             colour = colors[5],
+                            border_width = [0, 0, 2, 0],
+                        )
+                    ],
+                ),
+                widget.Spacer(length = 8),
+                widget.OpenWeather(
+                    cityid = '4459467', # replace with desired city ID (https://openweathermap.org/find)
+                    metric = False,
+                    format = '{location_city}: {main_temp}°F - {humidity}% hum. - {weather_details}',
+                    foreground = colors[3],
+                    decorations=[
+                        BorderDecoration(
+                            colour = colors[3],
                             border_width = [0, 0, 2, 0],
                         )
                     ],
