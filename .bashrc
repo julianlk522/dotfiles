@@ -96,9 +96,10 @@ fi
 alias suspend='systemctl suspend'
 alias nmrestart='sudo service NetworkManager restart'
 
-alias voff='amixer -D pulse set Master 0'
-alias vup='amixer -D pulse set Master 5%+'
-alias vdown='amixer -D pulse set Master 5%-'
+alias vset='amixer set Master'
+alias voff='amixer set Master 0'
+alias vup='amixer set Master 10%+'
+alias vdown='amixer set Master 10%-'
 
 # enable programmable completion features
 if ! shopt -oq posix; then
