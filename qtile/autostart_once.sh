@@ -1,2 +1,6 @@
 #!/bin/bash
-picom -b --config ~/.config/picom/picom.conf
+
+picom -b --config ~/.config/picom/picom.conf &
+firefox &
+wezterm &
+wezterm start --cwd ~/Documents/obsidian

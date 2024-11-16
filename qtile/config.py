@@ -1,7 +1,8 @@
+from os.path import expanduser
 import subprocess
 
 from libqtile import bar, hook, layout, qtile, widget
-from libqtile.config import Click, Drag, Group, Key, Match, Screen
+from libqtile.config import Click, Drag, Group, Key, KeyChord, Match, Screen
 from libqtile.lazy import lazy
 from qtile_extras import widget
 from qtile_extras.widget.decorations import BorderDecoration
@@ -9,69 +10,71 @@ from qtile_extras.widget.decorations import BorderDecoration
 
 @hook.subscribe.startup_once
 def startup_once():
+    subprocess.Popen(expanduser("~/.config/qtile/autostart_once.sh"))
 
-    subprocess.run('~/.config/qtile/autostart_once.sh')
-
-mod = "mod4"
-terminal = "wezterm"
+MOD = "mod4"
+TERMINAL = "wezterm"
 
 keys = [
 
     # Switch windows
-    Key([mod], "h", lazy.layout.left(), desc="Move focus to left"),
-    Key([mod], "l", lazy.layout.right(), desc="Move focus to right"),
-    Key([mod], "j", lazy.layout.down(), desc="Move focus down"),
-    Key([mod], "k", lazy.layout.up(), desc="Move focus up"),
-    Key([mod], "space", lazy.layout.next(), desc="Move window focus to other window"),
-    Key([mod], "w", lazy.window.kill(), desc="Kill focused window"),
-
+    Key([MOD], "h", lazy.layout.left(), desc="Move focus to left"),
+    Key([MOD], "l", lazy.layout.right(), desc="Move focus to right"),
+    Key([MOD], "j", lazy.layout.down(), desc="Move focus down"),
+    Key([MOD], "k", lazy.layout.up(), desc="Move focus up"),
+    Key([MOD], "space", lazy.layout.next(), desc="Move window focus to other window"),
+    Key([MOD], "w", lazy.window.kill(), desc="Kill focused window"),
+    KeyChord([MOD], "z", [
+        Key([], "h", lazy.prev_screen(), desc="Move to previous screen"),
+        Key([], "l", lazy.next_screen(), desc="Move to next screen"),
+    ]),
 
     # Move windows
-    Key([mod, "shift"], "h", lazy.layout.shuffle_left(), desc="Move window to the left"),
-    Key([mod, "shift"], "l", lazy.layout.shuffle_right(), desc="Move window to the right"),
-    Key([mod, "shift"], "j", lazy.layout.shuffle_down(), desc="Move window down"),
-    Key([mod, "shift"], "k", lazy.layout.shuffle_up(), desc="Move window up"),
+    Key([MOD, "shift"], "h", lazy.layout.shuffle_left(), desc="Move window to the left"),
+    Key([MOD, "shift"], "l", lazy.layout.shuffle_right(), desc="Move window to the right"),
+    Key([MOD, "shift"], "j", lazy.layout.shuffle_down(), desc="Move window down"),
+    Key([MOD, "shift"], "k", lazy.layout.shuffle_up(), desc="Move window up"),
 
 
     # Grow windows
-    Key([mod, "control"], "h", lazy.layout.grow_left(), desc="Grow window to the left"),
-    Key([mod, "control"], "l", lazy.layout.grow_right(), desc="Grow window to the right"),
-    Key([mod, "control"], "j", lazy.layout.grow_down(), desc="Grow window down"),
-    Key([mod, "control"], "k", lazy.layout.grow_up(), desc="Grow window up"),
-    Key([mod], "n", lazy.layout.normalize(), desc="Reset all window sizes"),
+    Key([MOD, "control"], "h", lazy.layout.grow_left(), desc="Grow window to the left"),
+    Key([MOD, "control"], "l", lazy.layout.grow_right(), desc="Grow window to the right"),
+    Key([MOD, "control"], "j", lazy.layout.grow_down(), desc="Grow window down"),
+    Key([MOD, "control"], "k", lazy.layout.grow_up(), desc="Grow window up"),
+    Key([MOD], "n", lazy.layout.normalize(), desc="Reset all window sizes"),
 
     # Switch layouts
-    Key([mod], "Tab", lazy.next_layout(), desc="Toggle between layouts"),
+    Key([MOD], "Tab", lazy.next_layout(), desc="Toggle between layouts"),
     Key(
-        [mod],
+        [MOD],
         "f",
         lazy.window.toggle_fullscreen(),
         desc="Toggle fullscreen on the focused window",
     ),
-    Key([mod], "t", lazy.window.toggle_floating(), desc="Toggle floating on the focused window"),
+    Key([MOD], "t", lazy.window.toggle_floating(), desc="Toggle floating on the focused window"),
 
     # Toggle split / unsplit stack modes
     Key(
-        [mod, "shift"],
+        [MOD, "shift"],
         "Return",
         lazy.layout.toggle_split(),
         desc="Toggle between split and unsplit sides of stack",
     ),
 
     # Run Commands
-    Key([mod], "Return", lazy.spawn(terminal), desc="Launch terminal"),
-    Key([mod], "r", lazy.spawncmd(), desc="Spawn a command using a prompt widget"),
+    Key([MOD], "Return", lazy.spawn(TERMINAL), desc="Launch terminal"),
+    Key([MOD], "r", lazy.spawncmd(), desc="Spawn a command using a prompt widget"),
 
     # Open web browser
-    Key([mod], "b", lazy.spawn("firefox"), desc="Open web browser"),
+    Key([MOD], "b", lazy.spawn("firefox"), desc="Open web browser"),
 
     # Increase / decrease brightness (LAPTOP ONLY)
     # Key([], "F3", lazy.spawn("brightnessctl s +5%"), desc="Increase display brightness"),
     # Key([], "F2", lazy.spawn("brightnessctl s 5%-"), desc="Decrease display brightness"),
 
     # Reset / shutdown qtile
-    Key([mod, "control"], "r", lazy.reload_config(), desc="Reload the config"),
-    Key([mod, "control"], "q", lazy.shutdown(), desc="Shutdown Qtile"),
+    Key([MOD, "control"], "r", lazy.reload_config(), desc="Reload the config"),
+    Key([MOD, "control"], "q", lazy.shutdown(), desc="Shutdown Qtile"),
 ]
 
 for vt in range(1, 8):
@@ -93,13 +96,13 @@ for i in groups:
     keys.extend(
         [
             Key(
-                [mod],
+                [MOD],
                 i.name,
                 lazy.group[i.name].toscreen(),
                 desc="Switch to group {}".format(i.name),
             ),
             Key(
-                [mod, "shift"],
+                [MOD, "shift"],
                 i.name,
                 lazy.window.togroup(i.name, switch_group=True),
                 desc="Switch to & move focused window to group {}".format(i.name),
@@ -141,148 +144,143 @@ widget_defaults = dict(
 )
 extension_defaults = widget_defaults.copy()
 
-active_network_interface = subprocess.check_output(["ip", "route", "show", "default"]).decode("utf-8").split("dev ")[1].split(" ")[0]
+active_network_interface = None
+try:
+    active_network_interface = subprocess.check_output(["ip", "route", "show", "default"]).decode("utf-8").split("dev ")[1].split(" ")[0]
+except (subprocess.CalledProcessError, IndexError):
+    pass
+
+SPACER_LENGTH = 8
+BORDER_WIDTH = [0, 0, 2, 0]
+BAR_SIZE = 24
+
+# Define widgets list as a function so Wlan can be conditionally added
+# if active_network_interface can be determined
+def get_top_bar_widgets():
+    widgets = [
+        widget.Prompt(foreground=colors[1]),
+        widget.GroupBox(
+            fontSize=12,
+            margin_y=5,
+            margin_x=5,
+            padding_y=0,
+            padding_x=1,
+            borderwidth=3,
+            active=colors[8],
+            inactive=colors[1],
+            rounded=False,
+            highlight_color=colors[2],
+            highlight_method="line",
+            this_current_screen_border=colors[7],
+            this_screen_border=colors[4],
+            other_current_screen_border=colors[7],
+            other_screen_border=colors[4],
+        ),
+        widget.TextBox(
+            text="|",
+            padding=2,
+            foreground=colors[1],
+        ),
+        widget.Spacer(SPACER_LENGTH),
+        widget.CPU(
+             format = '▓  CPU: {load_percent}%',
+             foreground = colors[4],
+             decorations=[
+                 BorderDecoration(
+                     colour = colors[4],
+                    border_width = BORDER_WIDTH,
+                 )
+             ],
+         ),
+        widget.Spacer(SPACER_LENGTH),
+        widget.Memory(
+            foreground = colors[4],
+            mouse_callbacks = {'Button1': lambda: qtile.spawn(TERMINAL + ' -e htop')},
+                 format = '{MemUsed: .0f}{mm}',
+            fmt = '🖥  Mem: {} used',
+            decorations=[
+                BorderDecoration(
+                    colour = colors[4],
+                    border_width = BORDER_WIDTH,
+                 )
+            ],
+         ),
+        widget.Spacer(SPACER_LENGTH),
+    ]
+
+    if active_network_interface is not None:
+        widgets.extend([
+            widget.Wlan(
+                interface = active_network_interface,
+                foreground = colors[5],
+                format = '📶  {essid} {quality}/70',
+                decorations=[
+                    BorderDecoration(
+                        colour = colors[5],
+                        border_width = BORDER_WIDTH,
+                    )
+                ]
+            ),
+            widget.Spacer(SPACER_LENGTH),
+        ])
+
+    widgets.extend([
+        widget.Net(
+            foreground = colors[5],
+            format = '📡 {down:6.2f}{down_suffix:<2}↓↑{up:6.2f}{up_suffix:<2}',
+            decorations=[
+                BorderDecoration(
+                    colour = colors[5],
+                    border_width = BORDER_WIDTH,
+                )
+            ],
+        ),
+        widget.Spacer(SPACER_LENGTH),
+        widget.OpenWeather(
+            cityid = '4459467', # replace with desired city ID (https://openweathermap.org/find)
+            metric = False,
+            format = '{location_city}: {main_temp}°F - {humidity}% hum. - {weather_details}',
+            foreground = colors[3],
+            decorations=[
+                BorderDecoration(
+                    colour = colors[3],
+                    border_width = BORDER_WIDTH,
+                )
+            ],
+        ),
+        widget.Spacer(SPACER_LENGTH),
+        widget.Clock(
+            foreground = colors[6],
+            format = "⏱  %Y-%m-%d %a %I:%M %p",
+            decorations=[
+                BorderDecoration(
+                    colour = colors[6],
+                    border_width = BORDER_WIDTH,
+                )
+            ],
+         ),
+        widget.Systray(padding = 3),
+        widget.Spacer(SPACER_LENGTH),
+    ])
+    
+    return widgets
+
 screens = [
     Screen(
         top=bar.Bar(
-            [
-                widget.Prompt(foreground=colors[1]),
-                widget.GroupBox(
-                    fontSize=12,
-                    margin_y=5,
-                    margin_x=5,
-                    padding_y=0,
-                    padding_x=1,
-                    borderwidth=3,
-                    active=colors[8],
-                    inactive=colors[1],
-                    rounded=False,
-                    highlight_color=colors[2],
-                    highlight_method="line",
-                    this_current_screen_border=colors[7],
-                    this_screen_border=colors[4],
-                    other_current_screen_border=colors[7],
-                    other_screen_border=colors[4],
-                ),
-                widget.TextBox(
-                    text="|",
-                    padding=2,
-                    foreground=colors[1],
-                ),
-                widget.Spacer(length = 8),
-                widget.CPU(
-                     format = '▓  CPU: {load_percent}%',
-                     foreground = colors[4],
-                     decorations=[
-                         BorderDecoration(
-                             colour = colors[4],
-                            border_width = [0, 0, 2, 0],
-                         )
-                     ],
-                 ),
-                widget.Spacer(length = 8),
-                widget.Memory(
-                    foreground = colors[4],
-                    mouse_callbacks = {'Button1': lambda: qtile.spawn(terminal + ' -e htop')},
-                         format = '{MemUsed: .0f}{mm}',
-                    fmt = '🖥  Mem: {} used',
-                    decorations=[
-                        BorderDecoration(
-                            colour = colors[4],
-                            border_width = [0, 0, 2, 0],
-                         )
-                    ],
-                 ),
-                widget.Spacer(length = 8),
-
-                # LAPTOP ONLY
-                # widget.Battery(
-                #     battery = 'CMB0',
-                #     foreground = colors[4],
-                #     format = '🔋  Bat: {percent:2.0%}',
-                #     decorations=[
-                #         BorderDecoration(
-                #             colour = colors[4],
-                #             border_width = [0, 0, 2, 0],
-                #         )
-                #     ]
-                # ),
-                # widget.Spacer(),
-                # widget.Backlight(
-                #     backlight_name = 'intel_backlight',
-                #     format = '🔆  Brightness: {percent:2.0%}',
-                #     foreground = colors[3],
-                #     decorations=[
-                #         BorderDecoration(
-                #             colour = colors[3],
-                #             border_width = [0, 0, 2, 0],
-                #         )
-                #     ],
-
-                # ),
-                # widget.Spacer(length = 8),
-
-                widget.Wlan(
-                    interface = active_network_interface,
-                    foreground = colors[5],
-                    format = '📶  {essid} {quality}/70',
-                    decorations=[
-                        BorderDecoration(
-                            colour = colors[5],
-                            border_width = [0, 0, 2, 0],
-                        )
-                    ]
-                ),
-                widget.Spacer(length = 8),
-                widget.Net(
-                    foreground = colors[5],
-                    format = '📡 {down:6.2f}{down_suffix:<2}↓↑{up:6.2f}{up_suffix:<2}',
-                    decorations=[
-                        BorderDecoration(
-                            colour = colors[5],
-                            border_width = [0, 0, 2, 0],
-                        )
-                    ],
-                ),
-                widget.Spacer(length = 8),
-                widget.OpenWeather(
-                    cityid = '4459467', # replace with desired city ID (https://openweathermap.org/find)
-                    metric = False,
-                    format = '{location_city}: {main_temp}°F - {humidity}% hum. - {weather_details}',
-                    foreground = colors[3],
-                    decorations=[
-                        BorderDecoration(
-                            colour = colors[3],
-                            border_width = [0, 0, 2, 0],
-                        )
-                    ],
-                ),
-                widget.Spacer(length = 8),
-                widget.Clock(
-                    foreground = colors[6],
-                    format = "⏱  %Y-%m-%d %a %I:%M %p",
-                    decorations=[
-                        BorderDecoration(
-                            colour = colors[6],
-                            border_width = [0, 0, 2, 0],
-                        )
-                    ],
-                 ),
-                widget.Systray(padding = 3),
-                widget.Spacer(length = 8),
-            ],
-            24,
+            get_top_bar_widgets(),
+            BAR_SIZE,
         ),
         bottom=bar.Bar(
             [
                 widget.CurrentLayout(),
-                widget.Spacer(length = 8),
+                widget.Spacer(SPACER_LENGTH),
                 widget.Prompt(),
                 widget.WindowName(foreground=colors[4], max_chars=100),
-                widget.Spacer(length = 8),
+                widget.Spacer(SPACER_LENGTH),
                 widget.QuickExit(default_text='[ Off ]', countdown_format='[ {} ]   ', foreground=colors[8]),
             ],
-            24,
+            BAR_SIZE
         ),
         wallpaper="~/.config/qtile/wallpaper/bg.jpg",
         wallpaper_mode='fill',
@@ -291,11 +289,12 @@ screens = [
 
 # Floating layout
 mouse = [
-    Drag([mod], "Button1", lazy.window.set_position_floating(), start=lazy.window.get_position()),
-    Drag([mod], "Button3", lazy.window.set_size_floating(), start=lazy.window.get_size()),
-    Click([mod], "Button2", lazy.window.bring_to_front()),
+    Drag([MOD], "Button1", lazy.window.set_position_floating(), start=lazy.window.get_position()),
+    Drag([MOD], "Button3", lazy.window.set_size_floating(), start=lazy.window.get_size()),
+    Click([MOD], "Button2", lazy.window.bring_to_front()),
 ]
 
+# Configs
 dgroups_key_binder = None
 dgroups_app_rules = []
 follow_mouse_focus = True
