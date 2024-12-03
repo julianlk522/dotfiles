@@ -101,6 +101,8 @@ alias voff='amixer set Master 0'
 alias vup='amixer set Master 10%+'
 alias vdown='amixer set Master 10%-'
 
+alias gcd='cd $(find ~/Documents/code -type d | fzf)'
+
 # enable programmable completion features
 if ! shopt -oq posix; then
   if [ -f /usr/share/bash-completion/bash_completion ]; then
