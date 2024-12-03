@@ -221,7 +221,7 @@ require('lazy').setup({
       -- LSP status updates
       { 'j-hui/fidget.nvim', opts = {} },
 
-      -- Extra nvim-cmp capabilities 
+      -- Extra nvim-cmp capabilities
       'hrsh7th/cmp-nvim-lsp',
     },
     config = function()
@@ -243,8 +243,8 @@ require('lazy').setup({
           map('<leader>rn', vim.lsp.buf.rename, '[R]e[n]ame')
           map('<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction')
           map('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
-           -- Toggle LSP inlay hints
-           if client and client.supports_method(vim.lsp.protocol.Methods.textDocument_inlayHint) then
+          -- Toggle LSP inlay hints
+          if client and client.supports_method(vim.lsp.protocol.Methods.textDocument_inlayHint) then
             map('<leader>th', function()
               vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled { bufnr = event.buf })
             end, '[T]oggle Inlay [H]ints')
@@ -277,7 +277,7 @@ require('lazy').setup({
         end,
       })
 
-      -- Add nvim-cmp LSP capabilities 
+      -- Add nvim-cmp LSP capabilities
       local capabilities = vim.lsp.protocol.make_client_capabilities()
       capabilities = vim.tbl_deep_extend('force', capabilities, require('cmp_nvim_lsp').default_capabilities())
 
@@ -457,7 +457,7 @@ require('lazy').setup({
       -- va)  - [V]isually select [A]round [)]paren
       -- yinq - [Y]ank [I]nside [N]ext [Q]uote
       -- ci'  - [C]hange [I]nside [']quote
-      require('mini.surround').setup()  -- Add/delete/replace surroundings (brackets, quotes, etc.)
+      require('mini.surround').setup() -- Add/delete/replace surroundings (brackets, quotes, etc.)
       -- saiw) - [S]urround [A]dd [I]nner [W]ord [)]Paren
       -- sd'   - [S]urround [D]elete [']quotes
       -- sr)'  - [S]urround [R]eplace [)] [']
