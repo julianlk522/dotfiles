@@ -15,6 +15,7 @@ done
 
 files=(
     ".bashrc"
+    ".inputrc"
     ".gitconfig"
 )
 
