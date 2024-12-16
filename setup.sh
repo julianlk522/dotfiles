@@ -38,6 +38,11 @@ if [ ! -d /opt/nvim-linux64 ] && [ ! -d /opt/nvim ]; then
     echo "export PATH=/opt/nvim/bin:$PATH" >> ~/.bashrc
 fi
 
+# direnv
+if [ ! -f /usr/bin/direnv ]; then
+    sudo apt install direnv
+fi
+
 chmod +x qtile/autostart_once.sh
 
 ## Move config files
