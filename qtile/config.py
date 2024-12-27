@@ -1,5 +1,5 @@
-from os.path import expanduser
 import subprocess
+from os.path import expanduser
 
 from libqtile import bar, hook, layout, qtile, widget
 from libqtile.config import Click, Drag, Group, Key, KeyChord, Match, Screen
@@ -182,25 +182,47 @@ def get_top_bar_widgets():
             foreground=colors[1],
         ),
         widget.Spacer(SPACER_LENGTH),
+        widget.ThermalSensor(
+            foreground = colors[3],
+            fmt = '🌡  {}',
+            decorations=[
+                BorderDecoration(
+                    colour = colors[3],
+                    border_width = BORDER_WIDTH,
+                 )
+            ],
+        ),
+        widget.Spacer(SPACER_LENGTH),
+        widget.NvidiaSensors(
+            foreground = colors[4],
+            fmt = '👽 {}',
+            decorations=[
+                BorderDecoration(
+                    colour = colors[4],
+                    border_width = BORDER_WIDTH,
+                 )
+            ],
+        ),
+        widget.Spacer(SPACER_LENGTH),
         widget.CPU(
              format = '▓  CPU: {load_percent}%',
-             foreground = colors[4],
+             foreground = colors[8],
              decorations=[
                  BorderDecoration(
-                     colour = colors[4],
+                     colour = colors[8],
                     border_width = BORDER_WIDTH,
                  )
              ],
          ),
         widget.Spacer(SPACER_LENGTH),
         widget.Memory(
-            foreground = colors[4],
+            foreground = colors[8],
             mouse_callbacks = {'Button1': lambda: qtile.spawn(TERMINAL + ' -e htop')},
                  format = '{MemUsed: .0f}{mm}',
             fmt = '🖥  Mem: {} used',
             decorations=[
                 BorderDecoration(
-                    colour = colors[4],
+                    colour = colors[8],
                     border_width = BORDER_WIDTH,
                  )
             ],
@@ -240,10 +262,10 @@ def get_top_bar_widgets():
             cityid = '4459467', # replace with desired city ID (https://openweathermap.org/find)
             metric = False,
             format = '{location_city}: {main_temp}°F - {humidity}% hum. - {weather_details}',
-            foreground = colors[3],
+            foreground = colors[4],
             decorations=[
                 BorderDecoration(
-                    colour = colors[3],
+                    colour = colors[4],
                     border_width = BORDER_WIDTH,
                 )
             ],
@@ -258,11 +280,22 @@ def get_top_bar_widgets():
                     border_width = BORDER_WIDTH,
                 )
             ],
-         ),
-        widget.Systray(padding = 3),
+        ),
         widget.Spacer(SPACER_LENGTH),
+        widget.Volume(
+            foreground = colors[7],
+            fmt = '🔊 {}',
+            decorations=[
+                BorderDecoration(
+                    colour = colors[7],
+                    border_width = BORDER_WIDTH,
+                )
+            ],
+        ),
+        widget.Systray(padding = 3),
+        widget.Spacer(SPACER_LENGTH)
     ])
-    
+
     return widgets
 
 screens = [
