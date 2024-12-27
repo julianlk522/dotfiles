@@ -7,8 +7,6 @@
 # assignments from /etc/Inputrc
 $include /etc/Inputrc
 
-set editing-mode vi
-
 # An old-style binding.  This happens to be the default.
 TAB: complete
 
