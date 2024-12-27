@@ -102,6 +102,10 @@ alias vup='amixer set Master 10%+'
 alias vdown='amixer set Master 10%-'
 
 alias gcd='cd $(find ~/Documents/code -type d | fzf)'
+alias dotfiles='cd ~/Documents/dotfiles'
+
+# fix monitor orientations (while HDMI is left of DisplayPort)
+alias fixmonitors='xrandr --output HDMI-0 --left-of DP-0'
 
 # enable programmable completion features
 if ! shopt -oq posix; then
