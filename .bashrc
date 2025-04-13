@@ -103,6 +103,7 @@ alias vdown='amixer set Master 10%-'
 
 alias gcd='cd $(find ~/Documents/code -type d | fzf)'
 alias dotfiles='cd ~/Documents/dotfiles'
+alias termhere='wezterm start --cwd "$(pwd)" > /dev/null 2>&1'
 
 # fix monitor orientations (while HDMI is left of DisplayPort)
 alias fixmonitors='xrandr --output HDMI-0 --left-of DP-0'
