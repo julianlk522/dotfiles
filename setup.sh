@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 ## Note: configured for Debian-based distributions. Other distros will need to use appropriate package managers, etc.
 
 ## .bashrc
