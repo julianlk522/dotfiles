@@ -15,18 +15,28 @@ def startup_once():
 MOD = "mod4"
 TERMINAL = "wezterm"
 
-keys = [
+# Groups
+group_labels = ["Dev","WWW",]
+groups = [Group(
+    name=str(group_labels.index(i)+1), label=i) for i in group_labels]
 
-    # Switch windows
+keys = [
+    # Kill
+    Key([MOD], "w", lazy.window.kill(), desc="Kill focused window"),
+
+    # Move focus
     Key([MOD], "h", lazy.layout.left(), desc="Move focus to left"),
     Key([MOD], "l", lazy.layout.right(), desc="Move focus to right"),
     Key([MOD], "j", lazy.layout.down(), desc="Move focus down"),
     Key([MOD], "k", lazy.layout.up(), desc="Move focus up"),
-    Key([MOD], "space", lazy.layout.next(), desc="Move window focus to other window"),
-    Key([MOD], "w", lazy.window.kill(), desc="Kill focused window"),
+   
     KeyChord([MOD], "z", [
-        Key([], "h", lazy.prev_screen(), desc="Move to previous screen"),
-        Key([], "l", lazy.next_screen(), desc="Move to next screen"),
+        Key([], "h", lazy.prev_screen(), desc="Focus previous screen"),
+        Key([], "l", lazy.next_screen(), desc="Focus next screen"),
+
+        # Move groups
+        Key([MOD], "h" , lazy.window.togroup(groups[1].name), desc="Move window to the left group"),
+        Key([MOD], "l" , lazy.window.togroup(groups[0].name), desc="Move window to the right group"),
     ]),
 
     # Move windows
@@ -35,22 +45,16 @@ keys = [
     Key([MOD, "shift"], "j", lazy.layout.shuffle_down(), desc="Move window down"),
     Key([MOD, "shift"], "k", lazy.layout.shuffle_up(), desc="Move window up"),
 
-
     # Grow windows
     Key([MOD, "control"], "h", lazy.layout.grow_left(), desc="Grow window to the left"),
     Key([MOD, "control"], "l", lazy.layout.grow_right(), desc="Grow window to the right"),
     Key([MOD, "control"], "j", lazy.layout.grow_down(), desc="Grow window down"),
     Key([MOD, "control"], "k", lazy.layout.grow_up(), desc="Grow window up"),
+    Key([MOD],"f", lazy.window.toggle_fullscreen(), desc="Toggle fullscreen on the focused window"),
     Key([MOD], "n", lazy.layout.normalize(), desc="Reset all window sizes"),
 
     # Switch layouts
     Key([MOD], "Tab", lazy.next_layout(), desc="Toggle between layouts"),
-    Key(
-        [MOD],
-        "f",
-        lazy.window.toggle_fullscreen(),
-        desc="Toggle fullscreen on the focused window",
-    ),
     Key([MOD], "t", lazy.window.toggle_floating(), desc="Toggle floating on the focused window"),
 
     # Toggle split / unsplit stack modes
@@ -63,19 +67,37 @@ keys = [
 
     # Run Commands
     Key([MOD], "Return", lazy.spawn(TERMINAL), desc="Launch terminal"),
-    Key([MOD], "r", lazy.spawncmd(), desc="Spawn a command using a prompt widget"),
+    Key([MOD], "r", lazy.spawncmd(), desc="Run command in prompt widget"),
 
     # Open web browser
     Key([MOD], "b", lazy.spawn("firefox"), desc="Open web browser"),
 
-    # Increase / decrease brightness (LAPTOP ONLY)
-    # Key([], "F3", lazy.spawn("brightnessctl s +5%"), desc="Increase display brightness"),
-    # Key([], "F2", lazy.spawn("brightnessctl s 5%-"), desc="Decrease display brightness"),
+    # Increase / decrease brightness (laptop)
+    # Key([], "F3", lazy.spawn("brightnessctl s +5%"), desc="Increase brightness"),
+    # Key([], "F2", lazy.spawn("brightnessctl s 5%-"), desc="Decrease brightness"),
 
     # Reset / shutdown qtile
-    Key([MOD, "control"], "r", lazy.reload_config(), desc="Reload the config"),
+    Key([MOD, "control"], "r", lazy.reload_config(), desc="Reload config"),
     Key([MOD, "control"], "q", lazy.shutdown(), desc="Shutdown Qtile"),
 ]
+
+for i in groups:
+    keys.extend(
+        [
+            Key(
+                [MOD],
+                i.name,
+                lazy.group[i.name].toscreen(),
+                desc="Focus group {}".format(i.name),
+            ),
+            Key(
+                [MOD, "shift"],
+                i.name,
+                lazy.window.togroup(i.name),
+                desc="Switch to group {}".format(i.name),
+            ),
+        ]
+    )
 
 for vt in range(1, 8):
     keys.append(
@@ -85,29 +107,6 @@ for vt in range(1, 8):
             lazy.core.change_vt(vt).when(func=lambda: qtile.core.name == "wayland"),
             desc=f"Switch to VT{vt}",
         )
-    )
-
-# Groups
-group_labels = ["Dev","WWW",]
-groups = [Group(
-    name=str(group_labels.index(i)+1), label=i) for i in group_labels]
-
-for i in groups:
-    keys.extend(
-        [
-            Key(
-                [MOD],
-                i.name,
-                lazy.group[i.name].toscreen(),
-                desc="Switch to group {}".format(i.name),
-            ),
-            Key(
-                [MOD, "shift"],
-                i.name,
-                lazy.window.togroup(i.name, switch_group=True),
-                desc="Switch to & move focused window to group {}".format(i.name),
-            ),
-        ]
     )
 
 # Theme

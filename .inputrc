@@ -26,6 +26,6 @@ set output-meta on
 set completion-query-items 150
 
 # Custom Bindings
-# F1/F2 to replace UP for history search 
+# F1/F2 to replace UP/DOWN for history search 
 "\eOP": history-search-backward
 "\eOQ": history-search-forward
