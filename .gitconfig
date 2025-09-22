@@ -17,7 +17,6 @@
 	lg1 = log --graph --abbrev-commit --decorate --format=format:\"%C(bold blue)%h%C(reset) - %C(bold yellow)(%ar)%C(reset) %C(bold green)%s%C(reset) %C(magenta)- %an%C(reset)%C(auto)%d%C(reset)\"
 	lg2 = log --graph --abbrev-commit --decorate --format=format:\"%C(bold blue)%h%C(reset) - %C(bold magenta)%aD%C(reset) %C(bold magenta)(%ar)%C(reset)%C(auto)%d%C(reset)%n%C(bold green)%s%C(reset) %C(yellow)- %an%C(reset)\"
 
-	# Thanks to https://github.com/mathiasbynens/dotfiles/
 	p = pull --recurse-submodules
 
 	aliases = config --get-regexp alias

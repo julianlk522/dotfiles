@@ -1,8 +1,6 @@
-# If not running interactively, don't do anything
-case $- in
-    *i*) ;;
-      *) return;;
-esac
+#
+# ~/.bashrc
+#
 
 # don't put duplicate lines or lines starting with space in the history.
 HISTCONTROL=ignoreboth
@@ -13,117 +11,58 @@ shopt -s histappend
 HISTSIZE=1000
 HISTFILESIZE=2000
 
-# check the window size after each command and, if necessary,
-# update the values of LINES and COLUMNS.
-shopt -s checkwinsize
+# If not running interactively, don't do anything
+[[ $- != *i* ]] && return
 
-# "**" matches all files and zero or more directories and subdirectories.
-shopt -s globstar
+PS1_CMD1=''
+PS1='\[\e[96m\][\T]\[\e[0m\] \[\e[92;1m\]\u@\h:\[\e[0;96m\]\w${PS1_CMD1}\[\e[92;1m\]\$\[\e[0m\] '
 
-# extend globbing
-shopt -s extglob
-
-# make less more friendly for non-text input files
-[ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
-
-# set variable identifying the chroot you work in (used in the prompt below)
-if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then
-    debian_chroot=$(cat /etc/debian_chroot)
-fi
-
-# set a fancy prompt
-case "$TERM" in
-    xterm-color|*-256color) color_prompt=yes;;
-esac
-
-if [ -n "$force_color_prompt" ]; then
-    if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
-	# We have color support; assume it's compliant with Ecma-48
-	# (ISO/IEC-6429). (Lack of such support is extremely rare, and such
-	# a case would tend to support setf rather than setaf.)
-	color_prompt=yes
-    else
-	color_prompt=
-    fi
-fi
-
-if [ "$color_prompt" = yes ]; then
-    PROMPT_COMMAND='PS1_CMD1=$(__git_ps1 " (%s)")';
-    PS1='\[\e[96m\][\T]\[\e[0m\] \[\e[92;1m\]\u@\h:\[\e[0;96m\]\w${PS1_CMD1}\[\e[92;1m\]\$\[\e[0m\] '
-else
-    PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
-fi
-unset color_prompt force_color_prompt
-
-# If this is an xterm set the title to user@host:dir
-case "$TERM" in
-xterm*|rxvt*)
-    PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
-    ;;
-*)
-    ;;
-esac
-
-# enable color support of ls and also add handy aliases
-if [ -x /usr/bin/dircolors ]; then
-    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
-    alias ls='ls --color=auto'
-    alias dir='dir --color=auto'
-    alias vdir='vdir --color=auto'
-
-    alias grep='grep --color=auto'
-    alias fgrep='fgrep --color=auto'
-    alias egrep='egrep --color=auto'
-fi
-
-# colored GCC warnings and errors
-export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
-
-# some more ls aliases
+alias ls='ls -AhX --color=auto --group-directories-first'
 alias ll='ls -alF'
-alias la='ls -A'
 alias l='ls -CF'
+alias grep='grep --color=auto'
 
-# Add an "alert" alias for long running commands.  Use like so:
-#   sleep 10; alert
-alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
-
-# Alias definitions.
-if [ -f ~/.bash_aliases ]; then
-    . ~/.bash_aliases
-fi
-
-alias suspend='systemctl suspend'
+alias p='sudo pacman'
 alias nmrestart='sudo service NetworkManager restart'
+alias voff='pactl set-sink-mute @DEFAULT_SINK@ toggle'
+alias vup='pactl set-sink-volume @DEFAULT_SINK@ +5%'
+alias vdown='pactl set-sink-volume @DEFAULT_SINK@ -5%'
+alias vset='pactl set-sink-volume @DEFAULT_SINK@'
 
-alias vset='amixer set Master'
-alias voff='amixer set Master 0'
-alias vup='amixer set Master 10%+'
-alias vdown='amixer set Master 10%-'
-
-alias gcd='cd $(find ~/Documents/code -type d | fzf)'
 alias dotfiles='cd ~/Documents/dotfiles'
-alias termhere='wezterm start --cwd "$(pwd)" > /dev/null 2>&1'
+alias cdf='copy_to_dotfiles.sh'
 
-# fix monitor orientations (while HDMI is left of DisplayPort)
-alias fixmonitors='xrandr --output HDMI-0 --left-of DP-0'
+code_dir="$HOME/Documents/code"
+alias gcd='cd $(find "$code_dir" -type d | fzf)'
 
-# enable programmable completion features
-if ! shopt -oq posix; then
-  if [ -f /usr/share/bash-completion/bash_completion ]; then
-    . /usr/share/bash-completion/bash_completion
-  elif [ -f /etc/bash_completion ]; then
-    . /etc/bash_completion
-  fi
-fi
+# 👽 Modeep
+setup_modeep_dev() {
+    local modeep_frontend_dir="$code_dir/JS-TS/Astro/modeep-frontend"
+    local modeep_backend_dir="$code_dir/Go/modeep-backend"
+
+    code "$modeep_frontend_dir" &
+    code "$modeep_backend_dir" &
+    
+    # wezterm cli spawn --new-window --cwd "$modeep_backend_dir" -- bash -c 'direnv allow && eval "$(direnv export bash)" && ./run.sh; exec bash' &
+    kitty @ new-window --cwd "$modeep_backend_dir" bash -c 'direnv allow && eval "$(direnv export bash)" && ./run.sh; exec bash'
+    
+    cd "$modeep_frontend_dir" && bash -c 'npm run dev; exec bash'
+}
+alias mddev='setup_modeep_dev'
+
+# 📝 julianlk.com
+setup_jlk_dev() {
+    local jlk_dotcom_dir="$code_dir/Go/julianlk.com"
+
+    # wezterm cli spawn --new-window --cwd "$jlk_dotcom_dir" -- bash -c 'hugo server -D; exec bash' > /dev/null & disown
+    kitty @ new-window --cwd "$jlk_dotcom_dir" bash -c 'hugo server -D; exec bash' > /dev/null & disown
+    nvim "$jlk_dotcom_dir"
+}
+alias jlkdev='setup_jlk_dev'
 
 export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # load nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # load nvm bash_completion
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
-# enable neovim
-export PATH="$PATH:/opt/nvim-linux64/bin"
-export EDITOR='nvim'
-
-# enable direnv
+# direnv
 eval "$(direnv hook bash)"
