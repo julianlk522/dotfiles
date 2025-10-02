@@ -6,6 +6,7 @@
   "modules-left": [
     "hyprland/workspaces",
     "tray",
+    "custom/sunset",
     "custom/lock",
     "custom/reboot",
     "custom/power"
@@ -32,6 +33,11 @@
       "2": "",
       "default": ""
     }
+  },
+  "custom/sunset": {
+    "format": "<span color='#FFD700'>  </span>",
+    "on-click": "sunset.sh toggle",
+    "tooltip": true
   },
   "custom/lock": {
   "format": "<span color='#00FFFF'>  </span>",

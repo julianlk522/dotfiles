@@ -34,7 +34,7 @@
 }
 
 #network,
-#custom-lock{
+#custom-sunset {
   background-color: rgba(15,27,53,0.9);
   margin-top: 6px;
   margin-left: 6px;
@@ -43,6 +43,7 @@
   border-width: 0px;
 }
 
+#custom-lock,
 #custom-reboot,
 #bluetooth,
 #battery,
@@ -57,7 +58,7 @@
   border-width: 0px;
 }
 
-#custpm-temperature.critical,
+#custom-temperature.critical,
 #pulseaudio.muted {
   color: #FF0000;
   padding-top: 0;
@@ -72,6 +73,7 @@
 #memory:hover,
 #cpu:hover,
 #clock:hover,
+#custom-sunset:hover,
 #custom-lock:hover,
 #custom-reboot:hover,
 #custom-power:hover,
