@@ -21,18 +21,21 @@ alias ls='ls -AhX --color=auto --group-directories-first'
 alias ll='ls -alF'
 alias l='ls -CF'
 alias grep='grep --color=auto'
+alias chx='chmod +x'
 
 alias p='sudo pacman'
-alias nmrestart='sudo service NetworkManager restart'
+alias nmrs='sudo service NetworkManager restart'
 alias voff='pactl set-sink-mute @DEFAULT_SINK@ toggle'
 alias vup='pactl set-sink-volume @DEFAULT_SINK@ +5%'
 alias vdown='pactl set-sink-volume @DEFAULT_SINK@ -5%'
 alias vset='pactl set-sink-volume @DEFAULT_SINK@'
 
-alias dotfiles='cd ~/Documents/dotfiles'
+docs_dir="$HOME/Documents"
+alias gob="cd $docs_dir/obsidian"
+alias gdf="cd $docs_dir/dotfiles"
 alias cdf='copy_to_dotfiles.sh'
 
-code_dir="$HOME/Documents/code"
+code_dir="$docs_dir/code"
 alias gcd='cd $(find "$code_dir" -type d | fzf)'
 
 # 👽 Modeep
@@ -40,13 +43,12 @@ setup_modeep_dev() {
     local modeep_frontend_dir="$code_dir/JS-TS/Astro/modeep-frontend"
     local modeep_backend_dir="$code_dir/Go/modeep-backend"
 
-    code "$modeep_frontend_dir" &
-    code "$modeep_backend_dir" &
-    
-    # wezterm cli spawn --new-window --cwd "$modeep_backend_dir" -- bash -c 'direnv allow && eval "$(direnv export bash)" && ./run.sh; exec bash' &
-    kitty @ new-window --cwd "$modeep_backend_dir" bash -c 'direnv allow && eval "$(direnv export bash)" && ./run.sh; exec bash'
-    
-    cd "$modeep_frontend_dir" && bash -c 'npm run dev; exec bash'
+    hyprctl dispatch workspace 3
+
+    kitty --hold --directory="$modeep_backend_dir" bash -c 'direnv allow && eval "$(direnv export bash)" && ./run.sh' &
+    kitty --hold --directory="$modeep_frontend_dir" bash -c 'npm run dev; exec bash' &
+    kitty nvim "$modeep_frontend_dir" &
+    kitty nvim "$modeep_backend_dir" 
 }
 alias mddev='setup_modeep_dev'
 
@@ -54,9 +56,10 @@ alias mddev='setup_modeep_dev'
 setup_jlk_dev() {
     local jlk_dotcom_dir="$code_dir/Go/julianlk.com"
 
-    # wezterm cli spawn --new-window --cwd "$jlk_dotcom_dir" -- bash -c 'hugo server -D; exec bash' > /dev/null & disown
-    kitty @ new-window --cwd "$jlk_dotcom_dir" bash -c 'hugo server -D; exec bash' > /dev/null & disown
-    nvim "$jlk_dotcom_dir"
+    hyprctl dispatch workspace 4
+
+    kitty --hold --directory="$jlk_dotcom_dir" hugo server -D &
+    kitty nvim "$jlk_dotcom_dir" 
 }
 alias jlkdev='setup_jlk_dev'
 
