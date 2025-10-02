@@ -13,6 +13,7 @@ vim.schedule(function()
   vim.opt.clipboard = 'unnamedplus'
 end)
 vim.opt.breakindent = true
+vim.opt.autoindent = true
 -- Save undo history
 vim.opt.undofile = true
 -- Case-insensitive searching UNLESS \C or one or more capital letters in the search term
@@ -42,11 +43,24 @@ vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagn
 -- Exit terminal mode in the builtin terminal with a shortcut that is a bit easier
 -- (<C-\><C-n> also works)
 vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
--- Split navigation
-vim.keymap.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Move focus to the left window' })
-vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
-vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
-vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
+-- Navigate splits
+vim.keymap.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Focus the left window' })
+vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Focus the right window' })
+vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Focus the lower window' })
+vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Focus the upper window' })
+-- Navigate tabs
+vim.keymap.set('n', '<A-h>', ':tabprevious<CR>', { desc = 'Focus previous tab' })
+vim.keymap.set('n', '<A-l>', ':tabnext<CR>', { desc = 'Focus next tab' })
+vim.keymap.set('n', '<A-Enter>', ':tabnew<CR>', { desc = 'New tab' })
+vim.keymap.set('n', '<A-w>', ':tabclose<CR>', { desc = 'Close tab' })
+-- Diffview
+vim.keymap.set('n', '<leader>dv', function()
+  if next(require('diffview.lib').views) == nil then
+    vim.cmd 'DiffviewOpen'
+  else
+    vim.cmd 'DiffviewClose'
+  end
+end, { desc = 'Toggle [D]iff [V]iew' })
 
 -- AUTOCOMMANDS
 -- Highlight when yanking (copying) text
@@ -73,7 +87,7 @@ vim.opt.rtp:prepend(lazypath)
 require('lazy').setup({
   'tpope/vim-sleuth', -- Detect tabstop and shiftwidth automatically
 
-  {                   -- Add git related signs to the gutter, utilities for managing changes
+  { -- Add git related signs to the gutter, utilities for managing changes
     'lewis6991/gitsigns.nvim',
     opts = {
       signs = {
@@ -155,7 +169,7 @@ require('lazy').setup({
       { 'nvim-telescope/telescope-ui-select.nvim' },
 
       -- Pretty icons
-      { 'nvim-tree/nvim-web-devicons',            enabled = vim.g.have_nerd_font },
+      { 'nvim-tree/nvim-web-devicons', enabled = vim.g.have_nerd_font },
     },
     config = function()
       require('telescope').setup {
@@ -209,7 +223,7 @@ require('lazy').setup({
       },
     },
   },
-  { 'Bilal2453/luvit-meta',     lazy = true },
+  { 'Bilal2453/luvit-meta', lazy = true },
 
   { -- LSP Config
     'neovim/nvim-lspconfig',
@@ -219,7 +233,7 @@ require('lazy').setup({
       'WhoIsSethDaniel/mason-tool-installer.nvim',
 
       -- LSP status updates
-      { 'j-hui/fidget.nvim',    opts = {} },
+      { 'j-hui/fidget.nvim', opts = {} },
 
       -- Extra nvim-cmp capabilities
       'hrsh7th/cmp-nvim-lsp',
@@ -236,7 +250,9 @@ require('lazy').setup({
           map('gr', require('telescope.builtin').lsp_references, '[G]oto [R]eferences')
           map('gI', require('telescope.builtin').lsp_implementations, '[G]oto [I]mplementation')
           map('<leader>D', require('telescope.builtin').lsp_type_definitions, 'Type [D]efinition')
+          -- Fuzzy find symbols in current document
           map('<leader>ds', require('telescope.builtin').lsp_document_symbols, '[D]ocument [S]ymbols')
+          -- Fuzzy find symbols in current workspace
           map('<leader>ws', require('telescope.builtin').lsp_dynamic_workspace_symbols, '[W]orkspace [S]ymbols')
           map('<leader>rn', vim.lsp.buf.rename, '[R]e[n]ame')
           map('<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction')
