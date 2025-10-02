@@ -101,7 +101,7 @@
   "clock": {
     "interval": 1,
     "timezone": "America/Eastern",
-    "format": "<span color='#BF00FF'>  </span>{:%A %B %d %H:%M} ",
+    "format": "<span color='#BF00FF'>  </span>{:%a %D - %I:%M %p} ",
   },
   "tray": {
     "icon-size": 15,

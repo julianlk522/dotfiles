@@ -46,13 +46,3 @@ case $1'' in
     exit $?
     ;;
 esac
- 
-# For Waybar styling
-if pkill -0 wlsunset
-then
-	class="on"
-else
-	class="off"
-fi	
- 
-printf '{"alt":"%s"}\n' "$class"
