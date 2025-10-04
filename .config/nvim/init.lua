@@ -37,8 +37,8 @@ vim.opt.scrolloff = 10
 -- Clear highlights on search when pressing <Esc> in normal mode
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 -- Diagnostics
-vim.keymap.set('n', 'd[', vim.diagnostic.goto_prev, { desc = 'Go to previous [D]iagnostic message.' })
-vim.keymap.set('n', 'd]', vim.diagnostic.goto_next, { desc = 'Go to next [D]iagnostic message.' })
+vim.keymap.set('n', '<leader>dn', vim.diagnostic.goto_next, { desc = 'Go to next diagnostic message' })
+vim.keymap.set('n', '<leader>dp', vim.diagnostic.goto_prev, { desc = 'Go to previous diagnostic message' })
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
 -- Exit terminal mode in the builtin terminal with a shortcut that is a bit easier
 -- (<C-\><C-n> also works)
@@ -61,6 +61,19 @@ vim.keymap.set('n', '<leader>dv', function()
     vim.cmd 'DiffviewClose'
   end
 end, { desc = 'Toggle [D]iff [V]iew' })
+-- Neotest
+vim.keymap.set('n', '<leader>tt', function()
+  require('neotest').run.run()
+end, { desc = 'Test: Run nearest' })
+vim.keymap.set('n', '<leader>tf', function()
+  require('neotest').run.run(vim.fn.expand '%')
+end, { desc = 'Test: Run [F]ile' })
+vim.keymap.set('n', '<leader>ts', function()
+  require('neotest').summary.toggle()
+end, { desc = 'Test: Toggle [S]ummary' })
+vim.keymap.set('n', '<leader>to', function()
+  require('neotest').output.open { enter = true }
+end, { desc = 'Test: Show [O]utput' })
 
 -- AUTOCOMMANDS
 -- Highlight when yanking (copying) text
@@ -147,7 +160,7 @@ require('lazy').setup({
         { '<leader>r', group = '[R]ename' },
         { '<leader>s', group = '[S]earch' },
         { '<leader>w', group = '[W]orkspace' },
-        { '<leader>t', group = '[T]oggle' },
+        { '<leader>t', group = '[T]est' },
         { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } },
       }
     end,
